@@ -8,7 +8,3 @@ const signUpPayloadSchema = z.object({
 
 export type SignUpPayload = z.infer<typeof signUpPayloadSchema>
 
-export type SignInParams = {
-    user: {email: string}
-    account: {provider: string}
-}

@@ -1,12 +1,10 @@
-import { NextAuthOptions } from "next-auth"
-import GoogleProvider from "next-auth/providers/google"
-import FacebookProvider from "next-auth/providers/facebook"
-import CredentialsProvider from "next-auth/providers/credentials"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import bcrypt from "bcrypt"
+import { NextAuthOptions } from "next-auth"
+import CredentialsProvider from "next-auth/providers/credentials"
+import GoogleProvider from "next-auth/providers/google"
 
-import prismadb from "@/lib/prismadb"
-import { SignInParams } from "./types/auth-types"
+import prismadb from "@/lib/db/prismadb"
 
 export const authOptions: NextAuthOptions = {
     adapter: PrismaAdapter(prismadb),
@@ -79,24 +77,6 @@ export const authOptions: NextAuthOptions = {
                     id: token.id,
                 }
             }
-        },
-        async signIn(params) {
-            const { user, account } = params as SignInParams
-            if (account.provider === "google" && user.email) {
-                const existingUser = await prismadb.user.findUnique({
-                    where: {
-                        email: user.email
-                    },
-                })
-
-                if (!existingUser) {
-                    await prismadb.user.update({
-                        where: { email: user.email },
-                        data: { emailVerified: true },
-                    })
-                }
-            }
-            return true
         },
     },
     // pages: {

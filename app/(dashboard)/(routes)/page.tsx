@@ -1,6 +1,8 @@
-import { Button } from "@/components/ui/button";
+import useServerUser from "@/hook/useServerUser";
 
-export default function Home() {
+export default async function Home() {
+  const { user } = await useServerUser()
+
   return (
     <main>
       This is a protected page.
