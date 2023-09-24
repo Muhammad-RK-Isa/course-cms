@@ -1,7 +1,8 @@
-import useServerUser from "@/hook/useServerUser";
+import useAuth from "@/hook/use-auth";
+import useServerUser from "@/hook/use-auth";
 
 export default async function Home() {
-  const { user } = await useServerUser()
+  const { user } = await useAuth()
 
   return (
     <main>
