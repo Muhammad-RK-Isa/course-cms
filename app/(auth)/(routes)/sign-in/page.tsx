@@ -1,10 +1,13 @@
 "use client"
 
+import { useState } from "react"
+import Image from "next/image"
 import { redirect } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
+import { EyeIcon, EyeOffIcon } from "lucide-react"
 
 import Heading from "@/components/ui/heading"
 import { Separator } from "@/components/ui/separator"
@@ -18,8 +21,6 @@ import {
     FormMessage
 } from "@/components/ui/form"
 import { Button } from "@/components/ui/button"
-import { useState } from "react"
-import Image from "next/image"
 
 const formSchema = z.object({
     email: z.string().email(),
@@ -37,6 +38,7 @@ const SignInPage = () => {
     if (session) redirect('/')
 
     const [loading, setLoading] = useState(false)
+    const [isTypePassword, setIsTypePassword] = useState(true)
 
     const form = useForm<formFields>({
         resolver: zodResolver(formSchema),
@@ -75,7 +77,24 @@ const SignInPage = () => {
                             <FormItem>
                                 <FormLabel>Password</FormLabel>
                                 <FormControl>
-                                    <Input {...field} />
+                                    <div className="relative">
+                                        <Input {...field} type={isTypePassword ? "password" : "text"} />
+                                        {field.value &&
+                                            <>
+                                                {isTypePassword ?
+                                                    <EyeIcon
+                                                        onClick={() => setIsTypePassword(false)}
+                                                        className="h-4 w-4 absolute right-2 top-1/2 -translate-y-1/2"
+                                                    />
+                                                    :
+                                                    <EyeOffIcon
+                                                        onClick={() => setIsTypePassword(true)}
+                                                        className="h-4 w-4 absolute right-2 top-1/2 -translate-y-1/2"
+                                                    />
+                                                }
+                                            </>
+                                        }
+                                    </div>
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
