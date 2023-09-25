@@ -72,7 +72,7 @@ const SignUpPage = () => {
                     title: "Account created successfully!",
                     description: "Please sign in to continue.",
                 })
-                // router.push('/sign-in')
+                router.push('/sign-in')
             }            
         } catch (error: any) {
             setLoading(false)

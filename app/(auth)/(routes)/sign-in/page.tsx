@@ -3,6 +3,7 @@
 import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
+import { useSearchParams, useRouter } from "next/navigation"
 import { signIn } from "next-auth/react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -25,6 +26,10 @@ import { Button } from "@/components/ui/button"
 const SignInPage = () => {
     const [loading, setLoading] = useState(false)
     const [isTypePassword, setIsTypePassword] = useState(true)
+    const router = useRouter()
+    const searchParams = useSearchParams()
+
+    const callbackUrl = searchParams.get("callbackUrl")
 
     const form = useForm<SignInFormFields>({
         resolver: zodResolver(signInFormSchema),
@@ -54,6 +59,12 @@ const SignInPage = () => {
                 setLoading(false)
                 return
             }
+
+            if (callbackUrl)
+                router.push(callbackUrl)
+            else
+                router.push('/')
+            
         } catch (error) {
             setLoading(false)
             console.error("[SIGNIN_ERROR]:", error)
@@ -92,33 +103,15 @@ const SignInPage = () => {
                                         {field.value &&
                                             <>
                                                 {isTypePassword ?
-                                                    <Button disabled={loading}
-                                                        variant="link"
-                                                        size="icon"
-                                                        className="absolute right-0 top-1/2 -translate-y-1/2"
-                                                        onClick={(e) => {
-                                                            e.preventDefault()
-                                                            setIsTypePassword(false)
-                                                        }}
-                                                    >
-                                                        <EyeIcon
-                                                            className="h-5 w-5 text-muted-foreground hover:text-foreground duration-300"
-                                                        />
-                                                    </Button>
+                                                    <EyeIcon
+                                                        className="absolute h-5 w-5 cursor-pointer text-muted-foreground hover:text-foreground duration-300 right-2 top-1/2 -translate-y-1/2"
+                                                        onClick={(e) => setIsTypePassword(false)}
+                                                    />
                                                     :
-                                                    <Button disabled={loading}
-                                                        variant="link"
-                                                        size="icon"
-                                                        className="absolute right-0 top-1/2 -translate-y-1/2"
-                                                        onClick={(e) => {
-                                                            e.preventDefault()
-                                                            setIsTypePassword(true)
-                                                        }}
-                                                    >
-                                                        <EyeOffIcon
-                                                            className="h-5 w-5 text-muted-foreground hover:text-foreground duration-300"
-                                                        />
-                                                    </Button>
+                                                    <EyeOffIcon
+                                                        className="absolute h-5 w-5 cursor-pointer text-muted-foreground hover:text-foreground duration-300 right-2 top-1/2 -translate-y-1/2"
+                                                        onClick={() => setIsTypePassword(true)}
+                                                    />
                                                 }
                                             </>
                                         }
