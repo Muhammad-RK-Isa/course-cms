@@ -27,7 +27,7 @@ export async function POST(
 
         if (!isValidPassword) return new NextResponse('INVALID_PASSWORD', { status: 400 })
 
-        const existingUser = await prismadb.user.findFirst({
+        const existingUser = await prismadb.user.findUnique({
             where: {
                 email,
             }

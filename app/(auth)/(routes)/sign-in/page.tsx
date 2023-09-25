@@ -25,9 +25,6 @@ import { Button } from "@/components/ui/button"
 
 
 const SignInPage = () => {
-    const { data: session } = useSession()
-    if (session) redirect('/')
-
     const [loading, setLoading] = useState(false)
     const [isTypePassword, setIsTypePassword] = useState(true)
 
@@ -101,7 +98,7 @@ const SignInPage = () => {
                                         {field.value &&
                                             <>
                                                 {isTypePassword ?
-                                                    <Button
+                                                    <Button disabled={loading}
                                                         variant="link"
                                                         size="icon"
                                                         className="absolute right-0 top-1/2 -translate-y-1/2"
@@ -115,7 +112,7 @@ const SignInPage = () => {
                                                         />
                                                     </Button>
                                                     :
-                                                    <Button
+                                                    <Button disabled={loading}
                                                         variant="link"
                                                         size="icon"
                                                         className="absolute right-0 top-1/2 -translate-y-1/2"
@@ -137,7 +134,7 @@ const SignInPage = () => {
                             </FormItem>
                         )}
                     />
-                    <Button type="submit" loading={loading} className="text-sm">
+                    <Button disabled={loading} type="submit" loading={loading} className="text-sm">
                         CONTINUE
                     </Button>
                 </form>
@@ -151,7 +148,7 @@ const SignInPage = () => {
                 <div className="px-2 text-gray-600">or</div>
                 <Separator className="flex-1" />
             </div>
-            <Button variant="outline" className="w-full" onClick={signInWithGoogle}>
+            <Button disabled={loading} variant="outline" className="w-full" onClick={signInWithGoogle}>
                 <Image
                     width={16}
                     height={16}
