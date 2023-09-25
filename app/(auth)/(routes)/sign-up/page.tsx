@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/form"
 import { Button } from "@/components/ui/button"
 
-export const formSchema = z
+const formSchema = z
     .object({
         name: z.string().min(1),
         email: z.string().email(),
