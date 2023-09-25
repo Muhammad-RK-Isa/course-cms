@@ -7,7 +7,8 @@ export default async function Home() {
   return (
     <main>
       This is a protected page.
-      <ThemeToggle/>
+      <ThemeToggle />
+      <pre>{ JSON.stringify(user) }</pre>
     </main>
   )
 }

@@ -10,8 +10,8 @@ export async function POST(
     try {
         const { name, email, password }: SignUpFormFields = await req.json()
 
-        if (!name) return new NextResponse('USERNAME_REQUIRED', { status: 400 })
-        if (!email) return new NextResponse('EMAIL_REQUIRED', { status: 400 })
+        if (!name) return new NextResponse('REQUIRED_FIELD_NAME', { status: 400 })
+        if (!email) return new NextResponse('REQUIRED_FIELD_EMAIL', { status: 400 })
 
         const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
         
@@ -19,7 +19,7 @@ export async function POST(
 
         if (!isValidEmail) return new NextResponse('INVALID_EMAIL', { status: 400 })
 
-        if (!password) return new NextResponse('PASSWORD_REQUIRED', { status: 400 })
+        if (!password) return new NextResponse('REQUIRED_PASSWORD', { status: 400 })
 
         const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d).{6,}$/
 

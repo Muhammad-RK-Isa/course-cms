@@ -4,11 +4,11 @@ import { useState } from "react"
 import Image from "next/image"
 import { redirect } from "next/navigation"
 import Link from "next/link"
-import { signIn, useSession } from "next-auth/react"
+import { signIn } from "next-auth/react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
-import axios from "axios"
+import axios, { AxiosResponse } from "axios"
 
 import Heading from "@/components/ui/heading"
 import { Separator } from "@/components/ui/separator"
@@ -23,17 +23,22 @@ import {
 } from "@/components/ui/form"
 import { Button } from "@/components/ui/button"
 import { SignUpFormFields } from "@/lib/types/auth-types"
+import { NextResponse } from "next/server"
 
 const formSchema = z
     .object({
-        name: z.string().min(1),
+        name: z
+            .string()
+            .refine((value) => value.length >= 1, {
+                message: "Name is required"
+            }),
         email: z.string().email(),
-        password: z.string().regex(/^(?=.*[A-Za-z])(?=.*\d).{6,}$/, "Password must be at least 6 characters long and include at least one letter and one digit"),
+        password: z.string().regex(/^(?=.*[A-Za-z])(?=.*\d).{6,}$/, "Password must be at least 6 characters long and include at least one letter and one digit."),
         confirm: z.string()
     })
     .refine((values) => values.password === values.confirm, {
         message: "Passwords do not match",
-        path: ["confirm"]
+        path: ["confirm"],
     })
 
 const SignUpPage = () => {
@@ -42,6 +47,7 @@ const SignUpPage = () => {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
+            name: "",
             email: "",
             password: "",
             confirm: "",
@@ -49,7 +55,6 @@ const SignUpPage = () => {
     })
 
     const signUp = async (values: z.infer<typeof formSchema>) => {
-
         const payload: SignUpFormFields = {
             name: values.name,
             email: values.email,
@@ -58,27 +63,17 @@ const SignUpPage = () => {
 
         try {
             setLoading(true)
-
-            const result = await axios.post("/api/auth/sign-up", payload)
-            console.log(result)
-            // if (result?.error === "USER_NOT_FOUND") {
-            //     form.setError("email", { message: "User does not exist!" })
-            //     setLoading(false)
-            //     return
-            // }
-            // if (result?.error === "LOGIN_USING_PROVIDER:google") {
-            //     form.setError("email", { message: "This email is associated with a google account. Please sign in using your google account." })
-            //     setLoading(false)
-            //     return
-            // }
-            // if (result?.error === "INCORRECT_PASSWORD") {
-            //     form.setError("password", { message: "Incorrect password!" })
-            //     setLoading(false)
-            //     return
-            // }
-        } catch (error) {
+            const result: AxiosResponse = await axios.post("/api/auth/sign-up", payload)
+            console.log(result.data)
+        } catch (error: any) {
             setLoading(false)
-            console.error("[SIGNIN_ERROR]:", error)
+            if (axios.isAxiosError(error)) {
+                if (error.response?.data === "EXISTING_USER" && error.response?.status === 409) {
+                    form.setError("email", {message: "An account with this email is already registered! Please sign in to continue."})
+                }
+                console.log(error.response?.data)
+            }
+            console.error("[SIGNUP_ERROR]:", error)
         } finally {
             setLoading(false)
         }
@@ -93,6 +88,19 @@ const SignUpPage = () => {
             <Heading title="Create your account" subtitle="to continue to Course-CMS" className="mb-6" />
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(signUp)} className="grid gap-4">
+                    <FormField
+                        control={form.control}
+                        name="name"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Full name</FormLabel>
+                                <FormControl>
+                                    <Input {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
                     <FormField
                         control={form.control}
                         name="email"
@@ -132,7 +140,7 @@ const SignUpPage = () => {
                             </FormItem>
                         )}
                     />
-                    <Button type="submit" className="text-sm">
+                    <Button disabled={loading} loading={loading} type="submit" className="text-sm">
                         CONTINUE
                     </Button>
                 </form>

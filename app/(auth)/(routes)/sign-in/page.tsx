@@ -2,9 +2,8 @@
 
 import { useState } from "react"
 import Image from "next/image"
-import { redirect } from "next/navigation"
 import Link from "next/link"
-import { signIn, useSession } from "next-auth/react"
+import { signIn } from "next-auth/react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { EyeIcon, EyeOffIcon } from "lucide-react"
@@ -22,7 +21,6 @@ import {
     FormMessage
 } from "@/components/ui/form"
 import { Button } from "@/components/ui/button"
-
 
 const SignInPage = () => {
     const [loading, setLoading] = useState(false)
@@ -42,7 +40,7 @@ const SignInPage = () => {
             const result = await signIn("credentials", { ...values, redirect: false })
 
             if (result?.error === "USER_NOT_FOUND") {
-                form.setError("email", { message: "User does not exist!" })
+                form.setError("email", { message: "No account is associated with this email! Please try a different email or Sign up." })
                 setLoading(false)
                 return
             }
@@ -62,10 +60,6 @@ const SignInPage = () => {
         } finally {
             setLoading(false)
         }
-    }
-
-    const signInWithGoogle = () => {
-        signIn("google", { redirect: false })
     }
 
     return (
@@ -141,14 +135,14 @@ const SignInPage = () => {
             </Form>
             <div className="mt-5 inline-flex text-sm items-center gap-1">
                 <span className="text-muted-foreground">No account?</span>
-                <Link href="/sign-up" className="font-semibold hover:underline underline-offset-2">Sign up</Link>
+                <Link href="/sign-up?callbackUrl=/sign-in" className="font-semibold hover:underline underline-offset-2">Sign up</Link>
             </div>
             <div className="my-6 flex items-center">
                 <Separator className="flex-1" />
                 <div className="px-2 text-gray-600">or</div>
                 <Separator className="flex-1" />
             </div>
-            <Button disabled={loading} variant="outline" className="w-full" onClick={signInWithGoogle}>
+            <Button disabled={loading} variant="outline" className="w-full" onClick={() => signIn("google")}>
                 <Image
                     width={16}
                     height={16}
