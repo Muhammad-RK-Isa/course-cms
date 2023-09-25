@@ -13,7 +13,7 @@ export async function POST(
         if (!name) return new NextResponse('REQUIRED_FIELD_NAME', { status: 400 })
         if (!email) return new NextResponse('REQUIRED_FIELD_EMAIL', { status: 400 })
 
-        const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
+        const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/
         
         const isValidEmail = emailRegex.test(email)
 

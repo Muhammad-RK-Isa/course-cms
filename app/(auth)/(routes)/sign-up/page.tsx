@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Image from "next/image"
-import { redirect, useRouter } from "next/navigation"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { signIn } from "next-auth/react"
 import { useForm } from "react-hook-form"
@@ -72,7 +72,7 @@ const SignUpPage = () => {
                     title: "Account created successfully!",
                     description: "Please sign in to continue.",
                 })
-                router.push('/sign-in')
+                router.push('/sign-up/success')
             }            
         } catch (error: any) {
             setLoading(false)
