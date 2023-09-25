@@ -2,13 +2,13 @@ import { NextResponse } from "next/server"
 import bcrypt from "bcrypt"
 
 import prismadb from "@/lib/db/prismadb"
-import { SignUpPayload } from "@/lib/types/auth-types"
+import { SignUpFormFields } from "@/lib/types/auth-types"
 
 export async function POST(
     req: Request
 ) {
     try {
-        const { name, email, password }: SignUpPayload = await req.json()
+        const { name, email, password }: SignUpFormFields = await req.json()
 
         if (!name) return new NextResponse('USERNAME_REQUIRED', { status: 400 })
         if (!email) return new NextResponse('EMAIL_REQUIRED', { status: 400 })
