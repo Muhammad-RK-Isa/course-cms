@@ -63,7 +63,7 @@ const SignInPage = () => {
     }
 
     return (
-        <div className="w-[23rem] rounded-md border p-6 overflow-hidden">
+        <div className="w-[23rem] rounded-md border p-6">
             <Heading title="Sign in" subtitle="to continue to Course-CMS" className="mb-6" />
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(credentialLogin)} className="grid gap-4">
@@ -135,7 +135,7 @@ const SignInPage = () => {
             </Form>
             <div className="mt-5 inline-flex text-sm items-center gap-1">
                 <span className="text-muted-foreground">No account?</span>
-                <Link href="/sign-up?callbackUrl=/sign-in" className="font-semibold hover:underline underline-offset-2">Sign up</Link>
+                <Link href="/sign-up" className="font-semibold hover:underline underline-offset-2">Sign up</Link>
             </div>
             <div className="my-6 flex items-center">
                 <Separator className="flex-1" />

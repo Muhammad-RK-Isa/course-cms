@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Image from "next/image"
-import { redirect } from "next/navigation"
+import { redirect, useRouter } from "next/navigation"
 import Link from "next/link"
 import { signIn } from "next-auth/react"
 import { useForm } from "react-hook-form"
@@ -22,8 +22,8 @@ import {
     FormMessage
 } from "@/components/ui/form"
 import { Button } from "@/components/ui/button"
+import { useToast } from "@/components/ui/use-toast"
 import { SignUpFormFields } from "@/lib/types/auth-types"
-import { NextResponse } from "next/server"
 
 const formSchema = z
     .object({
@@ -43,6 +43,8 @@ const formSchema = z
 
 const SignUpPage = () => {
     const [loading, setLoading] = useState(false)
+    const router = useRouter()
+    const {toast} = useToast()
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -64,7 +66,14 @@ const SignUpPage = () => {
         try {
             setLoading(true)
             const result: AxiosResponse = await axios.post("/api/auth/sign-up", payload)
-            console.log(result.data)
+            setLoading(false)
+            if (result.data?.inserted) {
+                toast({
+                    title: "Account created successfully!",
+                    description: "Please sign in to continue.",
+                })
+                // router.push('/sign-in')
+            }            
         } catch (error: any) {
             setLoading(false)
             if (axios.isAxiosError(error)) {
@@ -74,8 +83,6 @@ const SignUpPage = () => {
                 console.log(error.response?.data)
             }
             console.error("[SIGNUP_ERROR]:", error)
-        } finally {
-            setLoading(false)
         }
     }
 
@@ -84,7 +91,7 @@ const SignUpPage = () => {
     }
 
     return (
-        <div className="w-[23rem] rounded-md border p-6 overflow-hidden">
+        <div className="w-[23rem] rounded-md border p-6">
             <Heading title="Create your account" subtitle="to continue to Course-CMS" className="mb-6" />
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(signUp)} className="grid gap-4">
