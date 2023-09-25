@@ -97,19 +97,37 @@ const SignInPage = () => {
                                 <FormLabel>Password</FormLabel>
                                 <FormControl>
                                     <div className="relative">
-                                        <Input {...field} type={isTypePassword ? "password" : "text"} className="pr-8"/>
+                                        <Input {...field} type={isTypePassword ? "password" : "text"} className="pr-8" />
                                         {field.value &&
                                             <>
                                                 {isTypePassword ?
-                                                    <EyeIcon
-                                                        onClick={() => setIsTypePassword(false)}
-                                                        className="h-4 w-4 absolute right-2 top-1/2 -translate-y-1/2"
-                                                    />
+                                                    <Button
+                                                        variant="link"
+                                                        size="icon"
+                                                        className="absolute right-0 top-1/2 -translate-y-1/2"
+                                                        onClick={(e) => {
+                                                            e.preventDefault()
+                                                            setIsTypePassword(false)
+                                                        }}
+                                                    >
+                                                        <EyeIcon
+                                                            className="h-5 w-5 text-muted-foreground hover:text-foreground duration-300"
+                                                        />
+                                                    </Button>
                                                     :
-                                                    <EyeOffIcon
-                                                        onClick={() => setIsTypePassword(true)}
-                                                        className="h-4 w-4 absolute right-2 top-1/2 -translate-y-1/2"
-                                                    />
+                                                    <Button
+                                                        variant="link"
+                                                        size="icon"
+                                                        className="absolute right-0 top-1/2 -translate-y-1/2"
+                                                        onClick={(e) => {
+                                                            e.preventDefault()
+                                                            setIsTypePassword(true)
+                                                        }}
+                                                    >
+                                                        <EyeOffIcon
+                                                            className="h-5 w-5 text-muted-foreground hover:text-foreground duration-300"
+                                                        />
+                                                    </Button>
                                                 }
                                             </>
                                         }
@@ -126,7 +144,7 @@ const SignInPage = () => {
             </Form>
             <div className="mt-5 inline-flex text-sm items-center gap-1">
                 <span className="text-muted-foreground">No account?</span>
-                <Link href="/sign-up" className="font-semibold">Sign up</Link>
+                <Link href="/sign-up" className="font-semibold hover:underline underline-offset-2">Sign up</Link>
             </div>
             <div className="my-6 flex items-center">
                 <Separator className="flex-1" />
