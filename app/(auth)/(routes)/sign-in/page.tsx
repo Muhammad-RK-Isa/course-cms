@@ -3,12 +3,13 @@
 import { useState } from "react"
 import Image from "next/image"
 import { redirect } from "next/navigation"
-import { useSession } from "next-auth/react"
+import Link from "next/link"
+import { signIn, useSession } from "next-auth/react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import * as z from "zod"
 import { EyeIcon, EyeOffIcon } from "lucide-react"
 
+import { SignInFormFields, signInFormSchema } from "@/lib/types/auth-types"
 import Heading from "@/components/ui/heading"
 import { Separator } from "@/components/ui/separator"
 import { Input } from "@/components/ui/input"
@@ -22,16 +23,6 @@ import {
 } from "@/components/ui/form"
 import { Button } from "@/components/ui/button"
 
-const formSchema = z.object({
-    email: z.string().email(),
-    password: z
-        .string()
-        .refine((value) => value.length >= 6, {
-            message: "Password must at least 6 characters long"
-        })
-})
-
-type formFields = z.infer<typeof formSchema>
 
 const SignInPage = () => {
     const { data: session } = useSession()
@@ -40,20 +31,48 @@ const SignInPage = () => {
     const [loading, setLoading] = useState(false)
     const [isTypePassword, setIsTypePassword] = useState(true)
 
-    const form = useForm<formFields>({
-        resolver: zodResolver(formSchema),
+    const form = useForm<SignInFormFields>({
+        resolver: zodResolver(signInFormSchema),
         defaultValues: {
             email: "",
             password: "",
         }
     })
 
-    const credentialLogin = (values: formFields) => {
-        console.log(values)
+    const credentialLogin = async (values: SignInFormFields) => {
+        setLoading(true)
+        try {
+            const result = await signIn("credentials", { ...values, redirect: false })
+
+            if (result?.error === "USER_NOT_FOUND") {
+                form.setError("email", { message: "User does not exist!" })
+                setLoading(false)
+                return
+            }
+            if (result?.error === "LOGIN_USING_PROVIDER:google") {
+                form.setError("email", { message: "This email is associated with a google account. Please sign in using your google account." })
+                setLoading(false)
+                return
+            }
+            if (result?.error === "INCORRECT_PASSWORD") {
+                form.setError("password", { message: "Incorrect password!" })
+                setLoading(false)
+                return
+            }
+        } catch (error) {
+            setLoading(false)
+            console.error("[SIGNIN_ERROR]:", error)
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    const signInWithGoogle = () => {
+        signIn("google", { redirect: false })
     }
 
     return (
-        <div className="max-w-sm min-w-[22rem] rounded-md border p-6 overflow-hidden">
+        <div className="w-[23rem] rounded-md border p-6 overflow-hidden">
             <Heading title="Sign in" subtitle="to continue to Course-CMS" className="mb-6" />
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(credentialLogin)} className="grid gap-4">
@@ -78,7 +97,7 @@ const SignInPage = () => {
                                 <FormLabel>Password</FormLabel>
                                 <FormControl>
                                     <div className="relative">
-                                        <Input {...field} type={isTypePassword ? "password" : "text"} />
+                                        <Input {...field} type={isTypePassword ? "password" : "text"} className="pr-8"/>
                                         {field.value &&
                                             <>
                                                 {isTypePassword ?
@@ -100,17 +119,21 @@ const SignInPage = () => {
                             </FormItem>
                         )}
                     />
-                    <Button loading={loading}>
+                    <Button type="submit" loading={loading} className="text-sm">
                         CONTINUE
                     </Button>
                 </form>
             </Form>
+            <div className="mt-5 inline-flex text-sm items-center gap-1">
+                <span className="text-muted-foreground">No account?</span>
+                <Link href="/sign-up" className="font-semibold">Sign up</Link>
+            </div>
             <div className="my-6 flex items-center">
                 <Separator className="flex-1" />
                 <div className="px-2 text-gray-600">or</div>
                 <Separator className="flex-1" />
             </div>
-            <Button variant="outline" className="w-full">
+            <Button variant="outline" className="w-full" onClick={signInWithGoogle}>
                 <Image
                     width={16}
                     height={16}

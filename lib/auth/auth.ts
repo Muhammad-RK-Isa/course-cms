@@ -27,7 +27,7 @@ export const authOptions: NextAuthOptions = {
                 }
             },
             async authorize(credentials) {
-                if (!credentials?.email) throw new Error("Please enter an email!")
+                if (!credentials?.email) throw new Error("Please enter an email address!")
                 if (!credentials?.password) throw new Error("Please enter the password!")
 
                 const user = await prismadb.user.findUnique({
