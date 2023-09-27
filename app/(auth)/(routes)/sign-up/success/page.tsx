@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useRouter, useSearchParams } from "next/navigation"
+import { redirect, useRouter, useSearchParams } from "next/navigation"
 import { CheckCircle } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -9,7 +9,14 @@ import { Button } from "@/components/ui/button"
 const SuccessScreen = () => {
 
     const router = useRouter()
-    const [count, setCount] = useState<number>(6)
+    const searchParams = useSearchParams()
+    const redirectDelay = searchParams.get("redirectIn")
+
+    if (!redirectDelay) redirect('/')
+
+    const delay = parseInt(redirectDelay!)
+
+    const [count, setCount] = useState(delay)
 
     useEffect(() => {
         const interval = setInterval(() => {

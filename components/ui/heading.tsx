@@ -4,8 +4,8 @@ import { cn } from "@/lib/utils"
 
 interface HeadingProps {
     title: string
-    subtitle: string
-    className: string
+    subtitle?: string
+    className?: string
 }
 
 const Heading: FC<HeadingProps> = ({

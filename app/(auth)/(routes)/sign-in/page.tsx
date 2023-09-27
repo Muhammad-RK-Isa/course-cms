@@ -64,7 +64,7 @@ const SignInPage = () => {
                 router.push(callbackUrl)
             else
                 router.push('/')
-            
+
         } catch (error) {
             setLoading(false)
             console.error("[SIGNIN_ERROR]:", error)
@@ -126,9 +126,12 @@ const SignInPage = () => {
                     </Button>
                 </form>
             </Form>
-            <div className="mt-5 inline-flex text-sm items-center gap-1">
-                <span className="text-muted-foreground">No account?</span>
-                <Link href="/sign-up" className="font-semibold hover:underline underline-offset-2">Sign up</Link>
+            <div className="mt-5 flex text-sm items-center justify-between">
+                <div className="inline-flex items-center gap-1">
+                    <span className="text-muted-foreground">No account?</span>
+                    <Link href="/sign-up" className="font-semibold hover:underline underline-offset-2">Sign up</Link>
+                </div>
+                <Link href={`/reset-password?email=${form.getValues("email")}`} className="font-semibold hover:underline underline-offset-2">Reset Password</Link>
             </div>
             <div className="my-6 flex items-center">
                 <Separator className="flex-1" />

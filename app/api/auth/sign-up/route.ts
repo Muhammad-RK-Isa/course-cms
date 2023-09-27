@@ -33,6 +33,13 @@ export async function POST(
             }
         })
 
+        const existingAccount = await prismadb.account.findFirst({
+            where: {
+                userId: existingUser?.id
+            }
+        })
+
+        if (existingAccount) return new NextResponse(`LOGIN_USING_PROVIDER:${existingAccount?.provider}`, { status: 409 })
         if (existingUser) return new NextResponse('EXISTING_USER', { status: 409 })
 
         const hash = await bcrypt.hash(password, 10)

@@ -44,7 +44,7 @@ const formSchema = z
 const SignUpPage = () => {
     const [loading, setLoading] = useState(false)
     const router = useRouter()
-    const {toast} = useToast()
+    const { toast } = useToast()
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -72,13 +72,16 @@ const SignUpPage = () => {
                     title: "Account created successfully!",
                     description: "Please sign in to continue.",
                 })
-                router.push('/sign-up/success')
-            }            
+                router.push('/sign-up/success?redirectIn=6')
+            }
         } catch (error: any) {
             setLoading(false)
             if (axios.isAxiosError(error)) {
+                if (error.response?.data === "LOGIN_USING_PROVIDER:google" && error.response?.status === 409) {
+                    form.setError("email", { message: "This email is associated with a google account. Please sign in using your google account." })
+                }
                 if (error.response?.data === "EXISTING_USER" && error.response?.status === 409) {
-                    form.setError("email", {message: "An account with this email is already registered! Please sign in to continue."})
+                    form.setError("email", { message: "An account with this email is already registered! Please sign in to continue." })
                 }
                 console.log(error.response?.data)
             }
