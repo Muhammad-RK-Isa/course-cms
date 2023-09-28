@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useSearchParams } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Send } from "lucide-react"
@@ -26,9 +26,9 @@ const formSchema = z.object({
 })
 
 const ResetPassword = () => {
-
     const [loading, setLoading] = useState(false)
     const searchParams = useSearchParams()
+    const router = useRouter()
     const email = searchParams.get("email")
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -39,15 +39,15 @@ const ResetPassword = () => {
     })
 
     const sendRecoveryEmail = async (values: z.infer<typeof formSchema>) => {
-
         const payload = {
             recipient: values.email
         }
-
         try {
             setLoading(true)
             const result = await axios.post("/api/auth/reset-password", payload)
-            console.log(result)
+            if (result.status === 200 && result.data === "EMAIL_SENT") {
+                router.push("/reset-password/email-send-success")
+            }
         } catch (error: any) {
             setLoading(false)
             if (axios.isAxiosError(error)) {
@@ -55,7 +55,6 @@ const ResetPassword = () => {
                     form.setError("email", { message: "Could not find an account associated with this email. Please sign up to continue." })
                 }
             }
-            console.log(error)
         } finally {
             setLoading(false)
         }
@@ -78,13 +77,13 @@ const ResetPassword = () => {
                             <FormItem>
                                 <FormLabel>Email</FormLabel>
                                 <FormControl>
-                                    <Input {...field} placeholder="What's your email?" />
+                                    <Input {...field} placeholder="What's your email?" disabled={loading} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
                         )}
                     />
-                    <Button className="w-full mt-4">
+                    <Button disabled={loading} loading={loading} type="submit" className="w-full mt-4">
                         Send Verification Email
                         <Send className="h-4 w-4 ml-2" />
                     </Button>

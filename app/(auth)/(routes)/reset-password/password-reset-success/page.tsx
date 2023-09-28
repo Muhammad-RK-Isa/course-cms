@@ -38,7 +38,7 @@ const SuccessScreen = () => {
             <div className="flex items-start gap-2 mb-4">
                 <CheckCircle className="h-8 w-8 mt-1 box-border block" />
                 <h2 className="scroll-m-20 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
-                    Account Created Successfully
+                    Your password has been reset
                 </h2>
             </div>
             <p className="leading-7">

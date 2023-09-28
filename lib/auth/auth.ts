@@ -37,14 +37,8 @@ export const authOptions: NextAuthOptions = {
                 })
 
                 if (!user) throw new Error("USER_NOT_FOUND")
-                if (!user.hash) {
-                    const account = await prismadb.account.findFirst({
-                        where: {
-                            userId: user.id
-                        }
-                    })
-                    throw new Error(`LOGIN_USING_PROVIDER:${account?.provider}`)
-                }
+                
+                if (!user.hash) throw new Error("INCORRECT_PASSWORD")
 
                 const passwordMatch = await bcrypt.compare(credentials?.password, user.hash)
 

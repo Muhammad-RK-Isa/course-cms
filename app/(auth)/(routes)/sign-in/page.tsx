@@ -49,17 +49,11 @@ const SignInPage = () => {
                 setLoading(false)
                 return
             }
-            if (result?.error === "LOGIN_USING_PROVIDER:google") {
-                form.setError("email", { message: "This email is associated with a google account. Please sign in using your google account." })
-                setLoading(false)
-                return
-            }
             if (result?.error === "INCORRECT_PASSWORD") {
                 form.setError("password", { message: "Incorrect password!" })
                 setLoading(false)
                 return
             }
-
             if (callbackUrl)
                 router.push(callbackUrl)
             else

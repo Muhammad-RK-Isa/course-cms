@@ -49,8 +49,9 @@ model Session {
 
 model VerificationToken {
   identifier String
-  token      String   @unique
+  token      String   @unique @default(uuid())
   expires    DateTime
+  used       Boolean  @default(false)
 
   @@unique([identifier, token])
 }

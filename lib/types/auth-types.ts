@@ -13,4 +13,7 @@ export interface SignUpFormFields {
     password: string
 }
 
-
+export interface CodeVerificationProps {
+    code: string
+    identifier: string
+}

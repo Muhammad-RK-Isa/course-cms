@@ -77,9 +77,6 @@ const SignUpPage = () => {
         } catch (error: any) {
             setLoading(false)
             if (axios.isAxiosError(error)) {
-                if (error.response?.data === "LOGIN_USING_PROVIDER:google" && error.response?.status === 409) {
-                    form.setError("email", { message: "This email is associated with a google account. Please sign in using your google account." })
-                }
                 if (error.response?.data === "EXISTING_USER" && error.response?.status === 409) {
                     form.setError("email", { message: "An account with this email is already registered! Please sign in to continue." })
                 }
