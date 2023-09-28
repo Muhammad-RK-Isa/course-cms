@@ -24,8 +24,9 @@ export async function GET(
                 token: decoded.token!,
             }
         })
-
+        
         if (!dbVerificationToken) return new NextResponse("INVALID_REQUEST", { status: 422 })
+        if (dbVerificationToken.used) return new NextResponse("TOKEN_EXPIRED", { status: 422 })
 
         const currentTime = new Date()
 

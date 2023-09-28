@@ -58,6 +58,7 @@ const CreateNewPasswordPage = () => {
         try {
             setLoading(true)
             await axios.post(`/api/auth/reset-password/${params.token}/${params.identifier}`, payload)
+            router.push("/reset-password/password-reset-success?redirectIn=10")
         } catch (error: any) {
             setLoading(false)
             if (axios.isAxiosError(error) && error.response?.status === 401) {
@@ -68,7 +69,6 @@ const CreateNewPasswordPage = () => {
             }
         } finally {
             setLoading(false)
-            router.push("/reset-password/password-reset-success?redirectIn=10")
         }
     }
 
