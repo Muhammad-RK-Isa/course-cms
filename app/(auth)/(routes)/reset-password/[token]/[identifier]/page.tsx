@@ -51,14 +51,16 @@ const CreateNewPasswordPage = () => {
     })
 
     const resetPassword = async (values: z.infer<typeof formSchema>) => {
-        const payload: {password: string} = {
+        const payload: { password: string } = {
             password: values.password
         }
 
         try {
             setLoading(true)
-            await axios.post(`/api/auth/reset-password/${params.token}/${params.identifier}`, payload)
-            router.push("/reset-password/password-reset-success?redirectIn=10")
+            const result = await axios.post(`/api/auth/reset-password/${params.token}/${params.identifier}`, payload)
+            if (result.data?.updated) {
+                router.push("/reset-password/password-reset-success?redirectIn=10")
+            }
         } catch (error: any) {
             setLoading(false)
             if (axios.isAxiosError(error) && error.response?.status === 401) {
@@ -75,7 +77,10 @@ const CreateNewPasswordPage = () => {
     useEffect(() => {
         (async function () {
             try {
-                await axios.get(`/api/auth/reset-password/${params.token}/${params.identifier}`)
+                const result = await axios.get(`/api/auth/reset-password/${params.token}/${params.identifier}`)
+                if (result.data?.validated) {
+                    setProcessing(false)
+                }
             } catch (error: any) {
                 if (axios.isAxiosError(error) && error.response?.status === 401) {
                     setError("TOKEN_EXPIRED")
@@ -85,11 +90,8 @@ const CreateNewPasswordPage = () => {
                 }
                 console.log(error)
                 setProcessing(false)
-            } finally {
-                setProcessing(false)
             }
-        }
-        )()
+        })()
     }, [])
 
     if (processing) {
@@ -124,44 +126,44 @@ const CreateNewPasswordPage = () => {
         )
     }
 
-        return (
-            <div className="w-[24rem] rounded-md border p-6">
-                <Heading title="Create a new password" className="mb-6" />
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(resetPassword)} className="grid gap-4">
-                        <FormField
-                            control={form.control}
-                            name="password"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Password</FormLabel>
-                                    <FormControl>
-                                        <Input {...field} type="text" />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="confirm"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Confirm password</FormLabel>
-                                    <FormControl>
-                                        <Input {...field} type="text" />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <Button disabled={loading} loading={loading} type="submit" className="text-sm">
-                            Save changes
-                        </Button>
-                    </form>
-                </Form>
-            </div>
-        )
+    return (
+        <div className="w-[24rem] rounded-md border p-6">
+            <Heading title="Create a new password" className="mb-6" />
+            <Form {...form}>
+                <form onSubmit={form.handleSubmit(resetPassword)} className="grid gap-4">
+                    <FormField
+                        control={form.control}
+                        name="password"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Password</FormLabel>
+                                <FormControl>
+                                    <Input {...field} type="text" />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="confirm"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Confirm password</FormLabel>
+                                <FormControl>
+                                    <Input {...field} type="text" />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <Button disabled={loading} loading={loading} type="submit" className="text-sm">
+                        Save changes
+                    </Button>
+                </form>
+            </Form>
+        </div>
+    )
 }
 
 export default CreateNewPasswordPage

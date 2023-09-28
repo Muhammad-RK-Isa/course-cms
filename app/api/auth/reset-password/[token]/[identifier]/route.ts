@@ -26,7 +26,7 @@ export async function GET(
         })
         
         if (!dbVerificationToken) return new NextResponse("INVALID_REQUEST", { status: 422 })
-        if (dbVerificationToken.used) return new NextResponse("TOKEN_EXPIRED", { status: 422 })
+        if (dbVerificationToken.used) return new NextResponse("TOKEN_EXPIRED", { status: 401 })
 
         const currentTime = new Date()
 
@@ -69,7 +69,7 @@ export async function POST(
         })
 
         if (!dbVerificationToken) return new NextResponse("INVALID_REQUEST", { status: 422 })
-        if (dbVerificationToken.used) return new NextResponse("TOKEN_EXPIRED", { status: 422 })
+        if (dbVerificationToken.used) return new NextResponse("TOKEN_EXPIRED", { status: 401 })
 
         const currentTime = new Date()
 
