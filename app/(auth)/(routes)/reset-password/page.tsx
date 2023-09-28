@@ -55,6 +55,11 @@ const ResetPassword = () => {
                     form.setError("email", { message: "Could not find an account associated with this email. Please sign up to continue." })
                 }
             }
+            if (axios.isAxiosError(error)) {
+                if (error.response?.data === "MAX_CODE_REQUEST_REACHED" && error.response?.status === 429) {
+                    form.setError("email", { message: "Too many attempts! Please try again after 10 minutes." })
+                }
+            }
         } finally {
             setLoading(false)
         }

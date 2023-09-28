@@ -17,17 +17,16 @@ export async function POST(
 
         // TODO: Uncomment the lines below to set limit for max 3 reset code requests
 
-        // const nonExpiredTokens = await prismadb.verificationToken.findMany({
-        //     where: {
-        //         identifier: recipient,
-        //         expires: {
-        //             gte: new Date()
-        //         }
-        //     }
-        // })
+        const nonExpiredTokens = await prismadb.verificationToken.findMany({
+            where: {
+                identifier: recipient,
+                expires: {
+                    gte: new Date()
+                }
+            }
+        })
 
-        // if (nonExpiredTokens.length >= 3) return new NextResponse("MAX_CODE_REQUEST_REACHED", { status: 429 })
-
+        if (nonExpiredTokens.length >= 3) return new NextResponse("MAX_CODE_REQUEST_REACHED", { status: 429 })
 
         if (!user) return new NextResponse("NON_EXISTING_USER", { status: 404 })
 
