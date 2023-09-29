@@ -1,5 +1,7 @@
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { UserButton } from "@/components/user-button";
 import useAuth from "@/hook/use-auth";
+import Link from "next/link";
 
 export default async function Home() {
   const { user } = await useAuth()
@@ -8,7 +10,13 @@ export default async function Home() {
     <main>
       This is a protected page.
       <ThemeToggle />
-      <pre>{ JSON.stringify(user) }</pre>
+      <div className="my-8">
+        {user ?
+          <UserButton />
+          :
+          <Link href="/sign-in">Sign in</Link>
+        }
+      </div>
     </main>
   )
 }

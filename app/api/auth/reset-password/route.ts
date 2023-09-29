@@ -45,8 +45,8 @@ export async function POST(
             }
         })
 
-        const jwtPayload = {
-            identifier: user.email,
+        const jwtPayload: jwt.JwtPayload = {
+            identifier: user.email!,
             token: token.token,
         }
 
@@ -85,7 +85,7 @@ export async function POST(
                                 <p style="font-size:14px;line-height:24px;margin:16px 0;color:rgb(0,0,0)">
                                     We have received a request to reset your password for your Course CMS account. To reset your password, please click on <strong>Reset password</strong> button or follow this 
                                     <a target="_blank" style="color:rgb(37,99,235);text-decoration:none;text-decoration-line:none"
-                                    href="${process.env.NEXTAUTH_URL}/reset-password/${jwtToken}/${user.email}">
+                                    href="${process.env.NEXTAUTH_URL}/reset-password/${jwtToken}">
                                     link
                                     </a>
                                 </p>
@@ -95,7 +95,7 @@ export async function POST(
                                     <tbody>
                                         <tr>
                                             <td>
-                                                <a href="${process.env.NEXTAUTH_URL}/reset-password/${jwtToken}/${user.email}" target="_blank"
+                                                <a href="${process.env.NEXTAUTH_URL}/reset-password/${jwtToken}" target="_blank"
                                                     style="p-x:20px;p-y:12px;line-height:100%;text-decoration:none;display:inline-block;max-width:100%;padding:12px 20px;border-radius:0.25rem;background-color:rgb(0,0,0);text-align:center;font-size:12px;font-weight:600;color:rgb(255,255,255);text-decoration-line:none"><span></span><span
                                                         style="p-x:20px;p-y:12px;max-width:100%;display:inline-block;line-height:120%;text-decoration:none;text-transform:none;mso-padding-alt:0px;mso-text-raise:9px">
                                                         Reset Password</span>
@@ -144,7 +144,7 @@ export async function POST(
         }
 
         await transporter.sendMail(options)
-        return NextResponse.json("EMAIL_SENT", {status: 200})
+        return NextResponse.json("EMAIL_SENT", { status: 200 })
     } catch (error) {
         console.log(error)
         return new NextResponse("INTERNAL_ERROR", { status: 500 })

@@ -1,19 +1,20 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import Image from "next/image"
-import { useParams, useRouter, useSearchParams } from "next/navigation"
-import Link from "next/link"
 import { useForm } from "react-hook-form"
+import { useParams, useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
-import axios from "axios"
+import {
+    Frown,
+    Loader2,
+    ShieldX
+} from "lucide-react"
 import * as z from "zod"
+import axios from "axios"
 
 import Heading from "@/components/ui/heading"
-import { Separator } from "@/components/ui/separator"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { useToast } from "@/components/ui/use-toast"
 import {
     Form,
     FormControl,
@@ -22,7 +23,6 @@ import {
     FormLabel,
     FormMessage
 } from "@/components/ui/form"
-import { Frown, Loader2, ShieldX } from "lucide-react"
 
 const formSchema = z
     .object({
@@ -35,9 +35,8 @@ const formSchema = z
     })
 
 const CreateNewPasswordPage = () => {
-
-    const params = useParams()
     const router = useRouter()
+    const params = useParams()
     const [loading, setLoading] = useState(false)
     const [processing, setProcessing] = useState(true)
     const [error, setError] = useState<string>("")
@@ -57,7 +56,7 @@ const CreateNewPasswordPage = () => {
 
         try {
             setLoading(true)
-            const result = await axios.post(`/api/auth/reset-password/${params.token}/${params.identifier}`, payload)
+            const result = await axios.post(`/api/auth/reset-password/${params.token}`, payload)
             if (result.data?.updated) {
                 router.push("/reset-password/password-reset-success?redirectIn=10")
             }
@@ -77,7 +76,7 @@ const CreateNewPasswordPage = () => {
     useEffect(() => {
         (async function () {
             try {
-                const result = await axios.get(`/api/auth/reset-password/${params.token}/${params.identifier}`)
+                const result = await axios.get(`/api/auth/reset-password/${params.token}`)
                 if (result.data?.validated) {
                     setProcessing(false)
                 }

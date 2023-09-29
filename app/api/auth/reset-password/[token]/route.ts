@@ -6,25 +6,25 @@ import prismadb from "@/lib/db/prismadb"
 
 export async function GET(
     req: Request,
-    { params }: { params: { token: string, identifier: string } }
+    { params }: { params: { token: string } }
 ) {
     try {
-        jwt.verify(params.token, process.env.NEXTAUTH_SECRET!, function (error, decoded) {
+        jwt.verify(params.token, process.env.NEXTAUTH_SECRET!, function (error) {
             if (error?.name === "TokenExpiredError") {
                 console.log(error.name)
                 return new NextResponse("TOKEN_EXPIRED", { status: 401 })
             }
         })
-        const decoded = jwt.verify(params.token, process.env.NEXTAUTH_SECRET!)
+
+        const decoded = jwt.verify(params.token, process.env.NEXTAUTH_SECRET!) as jwt.JwtPayload
 
         const dbVerificationToken = await prismadb.verificationToken.findUnique({
             where: {
-                identifier: params.identifier,
-                // @ts-ignore
-                token: decoded.token!,
+                identifier: decoded.identifier,
+                token: decoded.token,
             }
         })
-        
+
         if (!dbVerificationToken) return new NextResponse("INVALID_REQUEST", { status: 422 })
         if (dbVerificationToken.used) return new NextResponse("TOKEN_EXPIRED", { status: 401 })
 
@@ -32,7 +32,7 @@ export async function GET(
 
         if (currentTime >= dbVerificationToken.expires) return new NextResponse("TOKEN_EXPIRED", { status: 401 })
 
-        return NextResponse.json({ validated: true, identifier: params.identifier }, { status: 200 })
+        return NextResponse.json({ validated: true, identifier: decoded.identifier }, { status: 200 })
     } catch (error: any) {
         console.log(error)
         if (error?.name === "TokenExpiredError") {
@@ -47,7 +47,7 @@ export async function GET(
 
 export async function POST(
     req: Request,
-    { params }: { params: { token: string, identifier: string } }
+    { params }: { params: { token: string} }
 ) {
     const { password } = await req.json()
     if (!password) return new NextResponse("PASSWORD_REQUIRED", { status: 400 })
@@ -58,13 +58,12 @@ export async function POST(
                 return new NextResponse("TOKEN_EXPIRED", { status: 401 })
             }
         })
-        const decoded = jwt.verify(params.token, process.env.NEXTAUTH_SECRET!)
+        const decoded = jwt.verify(params.token, process.env.NEXTAUTH_SECRET!) as jwt.JwtPayload
 
         const dbVerificationToken = await prismadb.verificationToken.findUnique({
             where: {
-                identifier: params.identifier,
-                // @ts-ignore
-                token: decoded.token!,
+                identifier: decoded.identifier,
+                token: decoded.token,
             }
         })
 
@@ -79,7 +78,7 @@ export async function POST(
 
         await prismadb.user.update({
             where: {
-                email: params.identifier,
+                email: decoded.identifier,
             },
             data: {
                 hash,
@@ -89,7 +88,6 @@ export async function POST(
 
         await prismadb.verificationToken.update({
             where: {
-                // @ts-ignore
                 token: decoded.token!
             },
             data: {
