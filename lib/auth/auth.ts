@@ -93,8 +93,6 @@ export const authOptions: NextAuthOptions = {
                     emailVerified: profile.email_verified
                 }
             })
-
-            console.log("THE_PROFILE:", profile)
             return true
         }
     },
