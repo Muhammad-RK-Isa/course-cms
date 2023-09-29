@@ -32,11 +32,13 @@ export const SidebarItem = ({
             type="button"
             className={cn(
                 "flex items-center gap-x-2 text-muted-foreground text-sm font-[500] pl-6 transition-all hover:text-foreground hover:bg-foreground/5",
-                isActive && "text-foreground"
+                isActive && "text-primary bg-accent hover:bg-accent hover:text-primary"
             )}
         >
-            <Icon />
-            {label}
+            <div className="flex items-center gap-x-2 py-4">
+                <Icon />
+                {label}
+            </div>
         </button>
     )
 }

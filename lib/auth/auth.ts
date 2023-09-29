@@ -73,6 +73,30 @@ export const authOptions: NextAuthOptions = {
                 }
             }
         },
+        async signIn({account, profile}) {
+            if (!profile?.email) {
+                throw new Error("No profile found")
+            }
+
+            await prismadb.user.upsert({
+                where: {
+                    email: profile.email,
+                },
+                create: {
+                    email: profile.email,
+                    name: profile.name,
+                    image: profile.picture,
+                    emailVerified: profile.email_verified
+                },
+                update: {
+                    image: profile.picture,
+                    emailVerified: profile.email_verified
+                }
+            })
+
+            console.log("THE_PROFILE:", profile)
+            return true
+        }
     },
     pages: {
         signIn: "/sign-in",
