@@ -39,6 +39,10 @@ export const SidebarItem = ({
                 <Icon />
                 {label}
             </div>
+            <hr className={cn(
+                "ml-auto opacity-0 border-2 border-primary h-full transition-all",
+                isActive && "opacity-100"
+            ) } />
         </button>
     )
 }
