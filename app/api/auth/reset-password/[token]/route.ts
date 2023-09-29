@@ -95,7 +95,7 @@ export async function POST(
             }
         })
 
-        return NextResponse.json({ updated: true, identifier: params.identifier }, { status: 200 })
+        return NextResponse.json({ updated: true, identifier: decoded.identifier }, { status: 200 })
     } catch (error: any) {
         console.log(error)
         if (error?.name === "TokenExpiredError") {
