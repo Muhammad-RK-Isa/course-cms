@@ -10,7 +10,7 @@ export default async function Home() {
     <main>
       This is a protected page.
       <ThemeToggle />
-      <div className="my-8">
+      <div className="my-8 mr-20">
         {user ?
           <UserButton />
           :
