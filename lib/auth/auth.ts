@@ -38,7 +38,7 @@ export const authOptions: NextAuthOptions = {
                 })
 
                 if (!user) throw new Error("USER_NOT_FOUND")
-                
+
                 if (!user.hash) throw new Error("INCORRECT_PASSWORD")
 
                 const passwordMatch = await bcrypt.compare(credentials?.password, user.hash)
@@ -73,11 +73,10 @@ export const authOptions: NextAuthOptions = {
                 }
             }
         },
-        async signIn({account, profile}) {
+        async signIn({ account, profile }) {
             if (!profile?.email) {
                 throw new Error("No profile found")
             }
-
             await prismadb.user.upsert({
                 where: {
                     email: profile.email,
