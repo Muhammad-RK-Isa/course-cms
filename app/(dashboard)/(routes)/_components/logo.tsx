@@ -19,7 +19,7 @@ export const Logo = () => {
         <>
             {mode === "dark" ?
                 <Image
-                    src="./ccms-white-no-bg.svg"
+                    src="/ccms-white-no-bg.svg"
                     alt="icon"
                     height={130}
                     width={130}
@@ -27,7 +27,7 @@ export const Logo = () => {
                 />
                 :
                 <Image
-                    src="./ccms-black-no-bg.svg"
+                    src="/ccms-black-no-bg.svg"
                     alt="icon"
                     height={130}
                     width={130}
