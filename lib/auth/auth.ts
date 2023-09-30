@@ -74,9 +74,7 @@ export const authOptions: NextAuthOptions = {
             }
         },
         async signIn({ account, profile }) {
-            if (!profile?.email) {
-                throw new Error("No profile found")
-            }
+            if(!!account?.provider && profile)
             await prismadb.user.upsert({
                 where: {
                     email: profile.email,
@@ -96,7 +94,7 @@ export const authOptions: NextAuthOptions = {
         }
     },
     pages: {
-        signIn: "/sign-in",
+        // signIn: "/sign-in",
     },
     debug: process.env.NODE_ENV === "development"
 }
